@@ -1,12 +1,20 @@
 import express from 'express';
-import { uploadImage,downloadImage } from '../controller/image-controller.js';
+import { uploadImage, downloadImage } from '../controller/image-controller.js';
 import upload from '../utils/upload.js';
 
+const router = express.Router();
 
+router.post('/upload', upload.single('file'), uploadImage);
+router.get('/file/:fileId', downloadImage);
 
-export const router=express.Router();
+// Add a route for the root URL
+router.get('/', (req, res) => {
+    res.send('Welcome to the File Sharing Service API');
+});
 
-router.post('/upload',upload.single('file'),uploadImage);
+// Handle undefined routes
+router.all('*', (req, res) => {
+    res.status(404).send('Route not found');
+});
 
-
-router.get('/file/:fileId',downloadImage);
+export default router;
